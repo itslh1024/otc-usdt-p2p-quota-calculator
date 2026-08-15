@@ -6,15 +6,15 @@ import { fetchLiveExchangeRates } from './services/rateService';
 import { calculateOTCQuote, formatNumber } from './utils/calculator';
 import { Header } from './components/Header';
 import { ConverterCard } from './components/ConverterCard';
-import { CalculationBreakdown } from './components/CalculationBreakdown';
 import { BottomActionBar } from './components/BottomActionBar';
-import { QuickAdjustBottomSheet } from './components/QuickAdjustBottomSheet';
+import { BottomSheet } from './components/ui/BottomSheet';
+import { CalculationBreakdown } from './components/CalculationBreakdown';
+import { FeeSettingsBar } from './components/FeeSettingsBar';
 import { QuickQuoteModal } from './components/QuickQuoteModal';
 import { TradeHistoryModal } from './components/TradeHistoryModal';
 import { SettingsModal } from './components/SettingsModal';
 import { SetupWalletModal } from './components/SetupWalletModal';
 import { CheckCircle2, Shield } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
 
 const STORAGE_KEYS = {
   LANGUAGE: 'otc_language_v1',
@@ -63,11 +63,9 @@ export default function App() {
   const [profitMarginPercent, setProfitMarginPercent] = useState<number>(15.0); // 15.0% default custom profit margin
   const [customRateOverride, setCustomRateOverride] = useState<number | null>(null);
 
-  // Hero Mode state: true expands custom numpad and collapses secondary controls for full immersion
-  const [isHeroMode, setIsHeroMode] = useState<boolean>(true);
-
   // Modals state
-  const [isQuickAdjustOpen, setIsQuickAdjustOpen] = useState<boolean>(false);
+  const [isDetailsSheetOpen, setIsDetailsSheetOpen] = useState<boolean>(false);
+  const [isRatesFeesSheetOpen, setIsRatesFeesSheetOpen] = useState<boolean>(false);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
   const [isSetupWalletModalOpen, setIsSetupWalletModalOpen] = useState<boolean>(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState<boolean>(false);
@@ -346,9 +344,7 @@ export default function App() {
         rateData={currentRateData}
         isLoadingRate={isLoadingRate}
         onRefreshRate={loadRates}
-        onOpenHistoryModal={() => setIsHistoryModalOpen(true)}
         hasCustomOverride={customRateOverride !== null && customRateOverride > 0}
-        historyCount={trades.length}
       />
 
       {/* Main Content Area */}
@@ -364,28 +360,9 @@ export default function App() {
           onSelectCurrency={setSelectedCurrency}
           result={calculationResult}
           onOpenQuoteModal={handleInitiatePayment}
-          onSaveTrade={handleSaveTrade}
           copiedQuota={copiedQuota}
           onCopyQuota={handleCopyQuota}
-          isHeroMode={isHeroMode}
-          onToggleHeroMode={setIsHeroMode}
         />
-
-        {/* Secondary Panels (Smoothly animated) */}
-        <AnimatePresence initial={false}>
-          {!isHeroMode && (
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 15 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-4"
-            >
-              {/* Transparent Calculation Waterfall & Audit */}
-              <CalculationBreakdown result={calculationResult} language={language} />
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Footer Quick Info */}
         <div className="py-4 text-center text-xs text-slate-400 dark:text-slate-500 space-y-1">
@@ -402,30 +379,39 @@ export default function App() {
       {/* Persistent Bottom Action Bar */}
       <BottomActionBar
         language={language}
-        onOpenQuickAdjust={() => setIsQuickAdjustOpen(true)}
-        onOpenSettings={handleOpenSettings}
-        walletsCount={wallets.length}
-        walletFeeUSDT={walletFeeUSDT}
-        conversionFeePercent={conversionFeePercent}
-        profitMarginPercent={profitMarginPercent}
+        onOpenDetails={() => setIsDetailsSheetOpen(true)}
+        onOpenRatesFees={() => setIsRatesFeesSheetOpen(true)}
+        onOpenHistory={() => setIsHistoryModalOpen(true)}
+        onOpenSettings={() => handleOpenSettings('general')}
       />
 
-      {/* Bottom Sheet for Quick Fee & Rate Adjustment */}
-      <QuickAdjustBottomSheet
-        isOpen={isQuickAdjustOpen}
-        onClose={() => setIsQuickAdjustOpen(false)}
-        language={language}
-        walletFeeUSDT={walletFeeUSDT}
-        onChangeWalletFee={setWalletFeeUSDT}
-        conversionFeePercent={conversionFeePercent}
-        onChangeConversionFee={setConversionFeePercent}
-        profitMarginPercent={profitMarginPercent}
-        onChangeProfitMargin={setProfitMarginPercent}
-        customRateOverride={customRateOverride}
-        onChangeCustomRateOverride={setCustomRateOverride}
-        marketRate={marketRate}
-        currentCurrency={selectedCurrency}
-      />
+      {/* Details Bottom Sheet: Transparent Quota Waterfall Breakdown */}
+      <BottomSheet
+        isOpen={isDetailsSheetOpen}
+        onClose={() => setIsDetailsSheetOpen(false)}
+      >
+        <CalculationBreakdown result={calculationResult} language={language} />
+      </BottomSheet>
+
+      {/* Rates & Fees Bottom Sheet */}
+      <BottomSheet
+        isOpen={isRatesFeesSheetOpen}
+        onClose={() => setIsRatesFeesSheetOpen(false)}
+      >
+        <FeeSettingsBar
+          language={language}
+          walletFeeUSDT={walletFeeUSDT}
+          onChangeWalletFee={setWalletFeeUSDT}
+          conversionFeePercent={conversionFeePercent}
+          onChangeConversionFee={setConversionFeePercent}
+          profitMarginPercent={profitMarginPercent}
+          onChangeProfitMargin={setProfitMarginPercent}
+          customRateOverride={customRateOverride}
+          onChangeCustomRateOverride={setCustomRateOverride}
+          marketRate={marketRate}
+          currentCurrency={selectedCurrency}
+        />
+      </BottomSheet>
 
       {/* Modals */}
       <SetupWalletModal
