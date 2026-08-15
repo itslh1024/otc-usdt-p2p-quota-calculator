@@ -67,11 +67,22 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
   const currentWallet =
     wallets.find((w) => w.id === selectedWalletId) || defaultWallet;
 
-  const quoteMessage = generateQuoteText(
+  // Preview (keeps cost & effective rate lines)
+  const previewMessage = generateQuoteText(
     result,
     currentWallet.address,
     currentWallet.network,
-    quoteLang
+    quoteLang,
+    true
+  );
+
+  // Copy-to-clipboard (omits cost & effective rate lines)
+  const copyMessage = generateQuoteText(
+    result,
+    currentWallet.address,
+    currentWallet.network,
+    quoteLang,
+    false
   );
 
   useEffect(() => {
@@ -100,7 +111,8 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
     triggerHaptic('success');
 
     try {
-      await navigator.clipboard.writeText(quoteMessage);
+      // copy the clipboard-optimized message (no cost/effective rate lines)
+      await navigator.clipboard.writeText(copyMessage);
       setCopiedText(true);
       setTimeout(() => setCopiedText(false), 2000);
     } catch (err) {
@@ -179,7 +191,7 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
         {/* Modal Header */}
         <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold shrink-0 border border-blue-200/60 dark:border-blue-800/60">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold shrink-0 border border-blue-200/60 dark:b[...]">
               <QrCode className="w-4 h-4" />
             </div>
             <div>
@@ -199,9 +211,8 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
               triggerHaptic('light');
               onClose();
             }}
-            className="min-h-[44px] min-w-[44px] flex items-center justify-center -mr-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-xl active:bg-slate-100 dark:active:bg-slate-800 touch-manipulation active:scale-95"
-            aria-label="Close modal"
-          >
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center -mr-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-xl active:bg-slate-100 dark:active:bg[...]"
+            aria-label="Close modal">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -242,8 +253,7 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
                       triggerHaptic('light');
                       onOpenWalletSettings();
                     }}
-                    className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-bold min-h-[32px] flex items-center px-1"
-                  >
+                    className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-bold min-h-[32px] flex items-center px-1">
                     {t.walletConfigBtn}
                   </button>
                 )}
@@ -265,8 +275,7 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
                         selectedWalletId === w.id
                           ? 'bg-white dark:bg-slate-900 border-blue-600 shadow-xs ring-2 ring-blue-600/30'
                           : 'bg-slate-100/70 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
-                      }`}
-                    >
+                      }`}>
                       <div className="flex items-center justify-between gap-1">
                         <span className="font-bold text-[11px] text-slate-900 dark:text-white truncate">
                           {w.name}
@@ -322,13 +331,12 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
                     type="button"
                     id="btn-copy-address-slip"
                     onClick={handleCopyAddress}
-                    className="min-h-[36px] px-2 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 active:bg-blue-50 dark:active:bg-blue-950/60 rounded-lg flex items-center gap-1 transition-all touch-manipulation active:scale-95"
-                  >
+                    className="min-h-[36px] px-2 py-1 text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 active:bg-blue-50 dark:active:bg-blue-950/60 rounded-lg flex items-cen[...]">
                     {copiedAddress ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copiedAddress ? t.copiedAddrBtn : t.copyAddrBtn}</span>
                   </button>
                 </div>
-                <div className="p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-[11px] break-all text-slate-800 dark:text-slate-200 select-all leading-relaxed">
+                <div className="p-2.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700 font-mono text-[11px] break-all text-slate-800 dark:text-slate-200 select[...]">
                   {currentWallet.address}
                 </div>
                 {currentWallet.memoOrTag && (
@@ -362,16 +370,13 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
                         if (inlineError) setInlineError(null);
                       }}
                       placeholder={`Enter ${currentWallet.network} address...`}
-                      className={`w-full min-h-[42px] px-3 text-xs font-mono rounded-xl border bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 ${
-                        inlineError ? 'border-rose-500' : 'border-slate-300 dark:border-slate-700'
-                      }`}
+                      className={`w-full min-h-[42px] px-3 text-xs font-mono rounded-xl border bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring[...] ${inlineError ? 'border-rose-500' : 'border-slate-300 dark:border-slate-700'}`}
                     />
                   </div>
                   <button
                     type="button"
                     onClick={handlePasteInlineAddress}
-                    className="min-h-[42px] px-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs flex items-center gap-1 hover:bg-slate-300 transition-colors touch-manipulation active:scale-95 shrink-0"
-                  >
+                    className="min-h-[42px] px-3 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-bold text-xs flex items-center gap-1 hover:bg-slate-300 transiti[...]">
                     <Clipboard className="w-3.5 h-3.5" />
                     <span>{t.pasteFromClipboard}</span>
                   </button>
@@ -384,8 +389,7 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
                 <div className="flex items-center gap-2 pt-1">
                   <button
                     type="submit"
-                    className="flex-1 min-h-[42px] px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all touch-manipulation active:scale-95"
-                  >
+                    className="flex-1 min-h-[42px] px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shad[...]">
                     <Check className="w-3.5 h-3.5" />
                     <span>{t.saveAndApply}</span>
                   </button>
@@ -397,8 +401,7 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
                         triggerHaptic('light');
                         onOpenWalletSettings();
                       }}
-                      className="min-h-[42px] px-3 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl font-bold text-xs transition-colors touch-manipulation"
-                    >
+                      className="min-h-[42px] px-3 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl font-bold text-xs transition-colors touch-manipulation">
                       {t.walletConfigBtn}
                     </button>
                   )}
@@ -425,8 +428,7 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
                     quoteLang === 'zh'
                       ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
                       : 'text-slate-500'
-                  }`}
-                >
+                  }`}>
                   中文
                 </button>
                 <button
@@ -440,15 +442,14 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
                     quoteLang === 'en'
                       ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
                       : 'text-slate-500'
-                  }`}
-                >
+                  }`}>
                   EN
                 </button>
               </div>
             </div>
 
-            <pre className="p-3 bg-slate-100 dark:bg-slate-950 rounded-xl font-mono text-[11px] text-slate-700 dark:text-slate-300 whitespace-pre-wrap select-all leading-relaxed border border-slate-200 dark:border-slate-800 max-h-48 overflow-y-auto">
-              {quoteMessage}
+            <pre className="p-3 bg-slate-100 dark:bg-slate-950 rounded-xl font-mono text-[11px] text-slate-700 dark:text-slate-300 whitespace-pre-wrap select-all leading-relaxed border border-sla[...]">
+              {previewMessage}
             </pre>
           </div>
         </div>
@@ -459,8 +460,7 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
             type="button"
             id="btn-modal-copy-full-quote"
             onClick={handleCopyQuote}
-            className="flex-1 min-h-[48px] py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all duration-100 touch-manipulation active:scale-[0.97]"
-          >
+            className="flex-1 min-h-[48px] py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm [...]">
             {copiedText ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
             <span>{copiedText ? t.textSlipCopied : t.copyTextSlip}</span>
           </button>
@@ -469,8 +469,7 @@ export const QuickQuoteModal: React.FC<QuickQuoteModalProps> = ({
             type="button"
             id="btn-modal-save-trade"
             onClick={handleSave}
-            className="min-h-[48px] py-2.5 px-4 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all duration-100 touch-manipulation active:scale-[0.97]"
-          >
+            className="min-h-[48px] py-2.5 px-4 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-all d[...]">
             {isSaved ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
             <span>{isSaved ? t.tradeRecorded : t.saveTradeRecord}</span>
           </button>
