@@ -18,3 +18,4 @@ View your app in AI Studio: https://ai.studio/apps/4bb8a82a-0153-4b92-b524-d9dab
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+# otc-usdt-p2p-quota-calculator
