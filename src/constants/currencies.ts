@@ -1,0 +1,160 @@
+import { CurrencyInfo, WalletItem } from '../types';
+
+export const SUPPORTED_CURRENCIES: CurrencyInfo[] = [
+  {
+    code: 'CNY',
+    name: 'Chinese Yuan (RMB)',
+    symbol: '¥',
+    flag: '🇨🇳',
+    defaultRateToUSD: 7.24,
+    decimals: 2,
+  },
+  {
+    code: 'HKD',
+    name: 'Hong Kong Dollar',
+    symbol: 'HK$',
+    flag: '🇭🇰',
+    defaultRateToUSD: 7.78,
+    decimals: 2,
+  },
+  {
+    code: 'USD',
+    name: 'US Dollar',
+    symbol: '$',
+    flag: '🇺🇸',
+    defaultRateToUSD: 1.0,
+    decimals: 2,
+  },
+  {
+    code: 'THB',
+    name: 'Thai Baht',
+    symbol: '฿',
+    flag: '🇹🇭',
+    defaultRateToUSD: 34.5,
+    decimals: 2,
+  },
+  {
+    code: 'VND',
+    name: 'Vietnamese Dong',
+    symbol: '₫',
+    flag: '🇻🇳',
+    defaultRateToUSD: 25400,
+    decimals: 0,
+  },
+  {
+    code: 'MYR',
+    name: 'Malaysian Ringgit',
+    symbol: 'RM',
+    flag: '🇲🇾',
+    defaultRateToUSD: 4.45,
+    decimals: 2,
+  },
+  {
+    code: 'TWD',
+    name: 'New Taiwan Dollar',
+    symbol: 'NT$',
+    flag: '🇹🇼',
+    defaultRateToUSD: 32.5,
+    decimals: 2,
+  },
+  {
+    code: 'EUR',
+    name: 'Euro',
+    symbol: '€',
+    flag: '🇪🇺',
+    defaultRateToUSD: 0.95,
+    decimals: 2,
+  },
+  {
+    code: 'GBP',
+    name: 'British Pound',
+    symbol: '£',
+    flag: '🇬🇧',
+    defaultRateToUSD: 0.79,
+    decimals: 2,
+  },
+  {
+    code: 'JPY',
+    name: 'Japanese Yen',
+    symbol: '¥',
+    flag: '🇯🇵',
+    defaultRateToUSD: 153.2,
+    decimals: 0,
+  },
+  {
+    code: 'SGD',
+    name: 'Singapore Dollar',
+    symbol: 'S$',
+    flag: '🇸🇬',
+    defaultRateToUSD: 1.34,
+    decimals: 2,
+  },
+  {
+    code: 'PHP',
+    name: 'Philippine Peso',
+    symbol: '₱',
+    flag: '🇵🇭',
+    defaultRateToUSD: 58.2,
+    decimals: 2,
+  },
+  {
+    code: 'AED',
+    name: 'UAE Dirham',
+    symbol: 'AED',
+    flag: '🇦🇪',
+    defaultRateToUSD: 3.67,
+    decimals: 2,
+  },
+];
+
+export const DEFAULT_WALLET_CONFIG = {
+  network: 'TRC20' as const,
+  address: '',
+  merchantName: 'OTC Desk',
+};
+
+export const DEFAULT_WALLETS: WalletItem[] = [
+  {
+    id: 'w_default_trc20',
+    name: 'TRC20 (Tron)',
+    network: 'TRC20',
+    address: '',
+    isDefault: true,
+    createdAt: Date.now(),
+  },
+  {
+    id: 'w_backup_erc20',
+    name: 'ERC20 (Ethereum)',
+    network: 'ERC20',
+    address: '',
+    isDefault: false,
+    createdAt: Date.now() - 10000,
+  },
+  {
+    id: 'w_bep20_fast',
+    name: 'BEP20 (BNB Chain)',
+    network: 'BEP20',
+    address: '',
+    isDefault: false,
+    createdAt: Date.now() - 20000,
+  },
+  {
+    id: 'w_polygon',
+    name: 'Polygon',
+    network: 'Polygon',
+    address: '',
+    isDefault: false,
+    createdAt: Date.now() - 30000,
+  },
+  {
+    id: 'w_solana',
+    name: 'Solana',
+    network: 'Solana',
+    address: '',
+    isDefault: false,
+    createdAt: Date.now() - 40000,
+  },
+];
+
+export const QUICK_PRESETS_RMB = [1000, 3000, 5000, 10000, 20000, 50000, 100000];
+export const QUICK_PRESETS_USDT = [100, 300, 500, 1000, 2000, 5000, 10000];

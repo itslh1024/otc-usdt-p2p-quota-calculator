@@ -1,0 +1,6 @@
+{
+  "name": "OTC USDT P2P Quota Calculator",
+  "description": "Real-time P2P OTC USDT quota calculator and payment slip generator based on product and service costs, accounting for wallet network fees, market conversion spreads, and profit margins.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
