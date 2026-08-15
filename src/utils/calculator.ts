@@ -153,7 +153,8 @@ export function generateQuoteText(
   result: CalculationResult,
   walletAddress?: string,
   walletNetwork: string = 'TRC20',
-  language: 'zh' | 'en' = 'zh'
+  language: 'zh' | 'en' = 'zh',
+  includeCostBreakdown: boolean = true
 ): string {
   const { targetCurrency, grossUSDT, netLocalAmount, effectiveRate } = result;
   const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -164,8 +165,8 @@ export function generateQuoteText(
       `⏰ 报价时间: ${now} (有效期 15 分钟)`,
       `----------------------------`,
       `💰 应付货款: ${formatNumber(grossUSDT, 2)} USDT (${walletNetwork})`,
-      `📦 商品/服务成本: ${targetCurrency.symbol}${formatNumber(netLocalAmount, targetCurrency.decimals)} ${targetCurrency.code}`,
-      `📊 综合折算率: 1 USDT ≈ ${formatNumber(effectiveRate, 4)} ${targetCurrency.code}`,
+      includeCostBreakdown ? `📦 商品/服务成本: ${targetCurrency.symbol}${formatNumber(netLocalAmount, targetCurrency.decimals)} ${targetCurrency.code}` : '',
+      includeCostBreakdown ? `📊 综合折算率: 1 USDT ≈ ${formatNumber(effectiveRate, 4)} ${targetCurrency.code}` : '',
       walletAddress ? `----------------------------\n📥 收款地址 (${walletNetwork}):\n${walletAddress}` : '',
       `⚠️ 请务必核对网络类型并预留矿工费，转账后请发送交易截图。`,
     ].filter(Boolean).join('\n');
@@ -176,8 +177,8 @@ export function generateQuoteText(
     `⏰ Time: ${now} (Valid for 15 mins)`,
     `----------------------------`,
     `💰 Payable Amount: ${formatNumber(grossUSDT, 2)} USDT (${walletNetwork})`,
-    `📦 Product/Service Cost: ${targetCurrency.symbol}${formatNumber(netLocalAmount, targetCurrency.decimals)} ${targetCurrency.code}`,
-    `📊 Effective Rate: 1 USDT ≈ ${formatNumber(effectiveRate, 4)} ${targetCurrency.code}`,
+    includeCostBreakdown ? `📦 Product/Service Cost: ${targetCurrency.symbol}${formatNumber(netLocalAmount, targetCurrency.decimals)} ${targetCurrency.code}` : '',
+    includeCostBreakdown ? `📊 Effective Rate: 1 USDT ≈ ${formatNumber(effectiveRate, 4)} ${targetCurrency.code}` : '',
     walletAddress ? `----------------------------\n📥 Wallet Address (${walletNetwork}):\n${walletAddress}` : '',
     `⚠️ Please confirm the network type. Send transaction screenshot upon transfer.`,
   ].filter(Boolean).join('\n');
