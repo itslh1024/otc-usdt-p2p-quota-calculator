@@ -5,7 +5,10 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  html, body {
+  /* Ensure root elements occupy full height to prevent layout collapse when app mounts */
+  html, body, #root {
+    height: 100%;
+    margin: 0;
     touch-action: manipulation;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
