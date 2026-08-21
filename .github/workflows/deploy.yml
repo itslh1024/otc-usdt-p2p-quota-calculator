@@ -1,8 +1,14 @@
 name: Deploy Vite to GitHub Pages
 
-on:
-  push:
-    branches: [ main ]
+# DISABLED on 2026-08-21: Cloudflare Workers takes over deployment
+# Keeping this file for rollback. To re-enable GitHub Pages:
+# 1. Uncomment the 'on: push' block below
+# 2. Make sure Cloudflare integration is removed/disabled
+# 3. Push to main to verify
+#
+# on:
+#   push:
+#     branches: [ main ]
 
 permissions:
   contents: read
