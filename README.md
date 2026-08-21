@@ -25,5 +25,3 @@ npm run build
 ## 说明
 
 - 已从 package.json 中移除不再使用的 `motion` 依赖；项目仍然使用 `framer-motion`。
-
-<!-- verify-deploy: 2026-08-21 11:29:14 +08 -->
